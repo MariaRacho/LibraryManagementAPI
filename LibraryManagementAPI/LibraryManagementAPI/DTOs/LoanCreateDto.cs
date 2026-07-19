@@ -4,10 +4,11 @@ namespace LibraryManagementAPI.DTOs;
 
 public class LoanCreateDto
 {
-    [Required]
+    [Range(1, int.MaxValue)]
     public int BookId { get; set; }
 
     [Required]
+    [MinLength(2)]
     public string UserId { get; set; } = string.Empty;
 
     public DateTime LoanDate { get; set; }

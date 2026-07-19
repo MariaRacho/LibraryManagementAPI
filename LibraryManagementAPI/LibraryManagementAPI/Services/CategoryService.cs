@@ -17,10 +17,12 @@ public class CategoryService
     public async Task<List<CategoryResponseDto>> GetAllAsync()
     {
         return await _context.Categories
+            .Include(category => category.Books)
             .Select(category => new CategoryResponseDto
             {
                 Id = category.Id,
-                Name = category.Name
+                Name = category.Name,
+                BookCount = category.Books.Count
             })
             .ToListAsync();
     }
@@ -28,11 +30,13 @@ public class CategoryService
     public async Task<CategoryResponseDto?> GetByIdAsync(int id)
     {
         return await _context.Categories
+            .Include(category => category.Books)
             .Where(category => category.Id == id)
             .Select(category => new CategoryResponseDto
             {
                 Id = category.Id,
-                Name = category.Name
+                Name = category.Name,
+                BookCount = category.Books.Count
             })
             .FirstOrDefaultAsync();
     }
@@ -50,7 +54,8 @@ public class CategoryService
         return new CategoryResponseDto
         {
             Id = category.Id,
-            Name = category.Name
+            Name = category.Name,
+            BookCount = 0
         };
     }
 

@@ -17,13 +17,15 @@ public class BookService
     public async Task<List<BookResponseDto>> GetAllAsync()
     {
         return await _context.Books
+            .Include(book => book.Category)
             .Select(book => new BookResponseDto
             {
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
                 PublishedYear = book.PublishedYear,
-                CategoryId = book.CategoryId
+                CategoryId = book.CategoryId,
+                CategoryName = book.Category != null ? book.Category.Name : string.Empty
             })
             .ToListAsync();
     }
@@ -31,6 +33,7 @@ public class BookService
     public async Task<BookResponseDto?> GetByIdAsync(int id)
     {
         return await _context.Books
+            .Include(book => book.Category)
             .Where(book => book.Id == id)
             .Select(book => new BookResponseDto
             {
@@ -38,7 +41,8 @@ public class BookService
                 Title = book.Title,
                 Author = book.Author,
                 PublishedYear = book.PublishedYear,
-                CategoryId = book.CategoryId
+                CategoryId = book.CategoryId,
+                CategoryName = book.Category != null ? book.Category.Name : string.Empty
             })
             .FirstOrDefaultAsync();
     }
@@ -62,7 +66,8 @@ public class BookService
             Title = book.Title,
             Author = book.Author,
             PublishedYear = book.PublishedYear,
-            CategoryId = book.CategoryId
+            CategoryId = book.CategoryId,
+            CategoryName = string.Empty
         };
     }
 

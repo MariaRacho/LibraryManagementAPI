@@ -15,5 +15,6 @@ public class BookCreateDto
     [Range(1000, 2100)]
     public int PublishedYear { get; set; }
 
+    [Range(1, int.MaxValue)]
     public int CategoryId { get; set; }
 }

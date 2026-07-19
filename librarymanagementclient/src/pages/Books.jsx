@@ -5,10 +5,12 @@ import {
     deleteBook,
     updateBook
 } from "../services/bookService";
+import { getCategories } from "../services/categoryService";
 import "../styles/Books.css";
 
 function Books() {
     const [books, setBooks] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
@@ -18,13 +20,16 @@ function Books() {
     const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
-        loadBooks();
+        loadData();
     }, []);
 
-    async function loadBooks() {
+    async function loadData() {
         try {
-            const data = await getBooks();
-            setBooks(data);
+            const booksData = await getBooks();
+            setBooks(booksData);
+
+            const categoriesData = await getCategories();
+            setCategories(categoriesData);
         } catch (error) {
             console.error(error);
         }
@@ -32,6 +37,16 @@ function Books() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (
+            !title.trim() ||
+            !author.trim() ||
+            !publishedYear ||
+            !categoryId
+        ) {
+            alert("Please fill in all required fields.");
+            return;
+        }
 
         const book = {
             title,
@@ -53,7 +68,7 @@ function Books() {
             setPublishedYear("");
             setCategoryId("");
 
-            loadBooks();
+            loadData();
         } catch (error) {
             console.error(error);
         }
@@ -62,7 +77,7 @@ function Books() {
     async function handleDelete(id) {
         try {
             await deleteBook(id);
-            loadBooks();
+            loadData();
         } catch (error) {
             console.error(error);
         }
@@ -73,17 +88,25 @@ function Books() {
         setTitle(book.title);
         setAuthor(book.author);
         setPublishedYear(book.publishedYear);
-        setCategoryId(book.categoryId);
+        setCategoryId(book.categoryId.toString());
     }
 
     return (
-        <>
-            <div className="book-form">
+        <div className="page-container">
+
+            <div className="page-header">
+                <h1>📚 Books</h1>
+                <p>Manage all books in your library.</p>
+            </div>
+
+            <div className="card form-card">
+
                 <h2>
                     {editingId === null ? "Add New Book" : "Edit Book"}
                 </h2>
 
                 <form onSubmit={handleSubmit}>
+
                     <input
                         type="text"
                         placeholder="Book Title"
@@ -105,23 +128,36 @@ function Books() {
                         onChange={(e) => setPublishedYear(e.target.value)}
                     />
 
-                    <input
-                        type="number"
-                        placeholder="Category Id"
+                    <select
                         value={categoryId}
                         onChange={(e) => setCategoryId(e.target.value)}
-                    />
+                    >
+                        <option value="">Select Category</option>
+
+                        {categories.map(category => (
+                            <option
+                                key={category.id}
+                                value={category.id}
+                            >
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
 
                     <button className="save-btn" type="submit">
                         {editingId === null ? "Add Book" : "Save Changes"}
                     </button>
+
                 </form>
+
             </div>
 
-            <div className="book-table">
-                <h2>Books</h2>
+            <div className="card table-card">
+
+                <h2>Book List</h2>
 
                 <table>
+
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -133,14 +169,18 @@ function Books() {
                     </thead>
 
                     <tbody>
+
                         {books.map(book => (
+
                             <tr key={book.id}>
+
                                 <td>{book.title}</td>
                                 <td>{book.author}</td>
                                 <td>{book.publishedYear}</td>
-                                <td>{book.categoryId}</td>
+                                <td>{book.categoryName}</td>
 
                                 <td>
+
                                     <button
                                         className="edit-btn"
                                         onClick={() => handleEdit(book)}
@@ -154,13 +194,20 @@ function Books() {
                                     >
                                         Delete
                                     </button>
+
                                 </td>
+
                             </tr>
+
                         ))}
+
                     </tbody>
+
                 </table>
+
             </div>
-        </>
+
+        </div>
     );
 }
 

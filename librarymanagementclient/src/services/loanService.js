@@ -1,7 +1,18 @@
 const API_URL = "https://localhost:7072/api/Loan";
 
+function getAuthHeaders() {
+    const token = localStorage.getItem("token");
+
+    return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+    };
+}
+
 export async function getLoans() {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {
+        headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
         throw new Error("Could not fetch loans.");
@@ -13,9 +24,7 @@ export async function getLoans() {
 export async function createLoan(loan) {
     const response = await fetch(API_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(loan)
     });
 
@@ -30,9 +39,7 @@ export async function createLoan(loan) {
 export async function updateLoan(id, loan) {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(loan)
     });
 
@@ -44,7 +51,8 @@ export async function updateLoan(id, loan) {
 
 export async function deleteLoan(id) {
     const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: getAuthHeaders()
     });
 
     if (!response.ok) {

@@ -1,5 +1,6 @@
 ﻿using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementAPI.Controllers;
@@ -16,6 +17,7 @@ public class LoanController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<List<LoanResponseDto>>> GetAll()
     {
         var loans = await _loanService.GetAllAsync();
@@ -23,6 +25,7 @@ public class LoanController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<LoanResponseDto>> GetById(int id)
     {
         var loan = await _loanService.GetByIdAsync(id);
@@ -36,6 +39,7 @@ public class LoanController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<LoanResponseDto>> Create(LoanCreateDto dto)
     {
         var loan = await _loanService.CreateAsync(dto);
@@ -44,6 +48,7 @@ public class LoanController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(int id, LoanUpdateDto dto)
     {
         var updated = await _loanService.UpdateAsync(id, dto);
@@ -57,6 +62,7 @@ public class LoanController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _loanService.DeleteAsync(id);

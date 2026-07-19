@@ -28,6 +28,11 @@ function Categories() {
     async function handleSubmit(e) {
         e.preventDefault();
 
+        if (name.trim() === "") {
+            alert("Category name is required.");
+            return;
+        }
+
         const category = {
             name
         };
@@ -62,13 +67,21 @@ function Categories() {
     }
 
     return (
-        <>
-            <div className="book-form">
+        <div className="page-container">
+
+            <div className="page-header">
+                <h1>📂 Categories</h1>
+                <p>Manage all categories in your library.</p>
+            </div>
+
+            <div className="card form-card">
+
                 <h2>
                     {editingId === null ? "Add Category" : "Edit Category"}
                 </h2>
 
                 <form onSubmit={handleSubmit}>
+
                     <input
                         type="text"
                         placeholder="Category Name"
@@ -79,26 +92,37 @@ function Categories() {
                     <button className="save-btn" type="submit">
                         {editingId === null ? "Add Category" : "Save Changes"}
                     </button>
+
                 </form>
+
             </div>
 
-            <div className="book-table">
-                <h2>Categories</h2>
+            <div className="card table-card">
+
+                <h2>Category List</h2>
 
                 <table>
+
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Books</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
+
                         {categories.map(category => (
+
                             <tr key={category.id}>
+
                                 <td>{category.name}</td>
 
+                                <td>{category.bookCount}</td>
+
                                 <td>
+
                                     <button
                                         className="edit-btn"
                                         onClick={() => handleEdit(category)}
@@ -112,13 +136,20 @@ function Categories() {
                                     >
                                         Delete
                                     </button>
+
                                 </td>
+
                             </tr>
+
                         ))}
+
                     </tbody>
+
                 </table>
+
             </div>
-        </>
+
+        </div>
     );
 }
 

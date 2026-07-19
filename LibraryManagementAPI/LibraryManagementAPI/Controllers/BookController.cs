@@ -1,5 +1,6 @@
 ﻿using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementAPI.Controllers;
@@ -15,6 +16,7 @@ public class BookController : ControllerBase
         _bookService = bookService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<BookResponseDto>>> GetAll()
     {
@@ -22,6 +24,7 @@ public class BookController : ControllerBase
         return Ok(books);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<BookResponseDto>> GetById(int id)
     {
@@ -35,6 +38,7 @@ public class BookController : ControllerBase
         return Ok(book);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<BookResponseDto>> Create(BookCreateDto dto)
     {
@@ -43,6 +47,7 @@ public class BookController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = book.Id }, book);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, BookUpdateDto dto)
     {
@@ -56,6 +61,7 @@ public class BookController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

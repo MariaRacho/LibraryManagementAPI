@@ -17,10 +17,12 @@ public class LoanService
     public async Task<List<LoanResponseDto>> GetAllAsync()
     {
         return await _context.Loans
+            .Include(loan => loan.Book)
             .Select(loan => new LoanResponseDto
             {
                 Id = loan.Id,
                 BookId = loan.BookId,
+                BookTitle = loan.Book != null ? loan.Book.Title : string.Empty,
                 UserId = loan.UserId,
                 LoanDate = loan.LoanDate,
                 ReturnDate = loan.ReturnDate
@@ -31,11 +33,13 @@ public class LoanService
     public async Task<LoanResponseDto?> GetByIdAsync(int id)
     {
         return await _context.Loans
+            .Include(loan => loan.Book)
             .Where(loan => loan.Id == id)
             .Select(loan => new LoanResponseDto
             {
                 Id = loan.Id,
                 BookId = loan.BookId,
+                BookTitle = loan.Book != null ? loan.Book.Title : string.Empty,
                 UserId = loan.UserId,
                 LoanDate = loan.LoanDate,
                 ReturnDate = loan.ReturnDate
@@ -60,6 +64,7 @@ public class LoanService
         {
             Id = loan.Id,
             BookId = loan.BookId,
+            BookTitle = string.Empty,
             UserId = loan.UserId,
             LoanDate = loan.LoanDate,
             ReturnDate = loan.ReturnDate

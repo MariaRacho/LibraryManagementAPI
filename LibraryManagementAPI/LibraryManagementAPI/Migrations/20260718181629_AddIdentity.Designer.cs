@@ -4,6 +4,7 @@ using LibraryManagementAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260718181629_AddIdentity")]
+    partial class AddIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,8 +114,6 @@ namespace LibraryManagementAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Books");
                 });
 
@@ -155,8 +156,6 @@ namespace LibraryManagementAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookId");
 
                     b.ToTable("Loans");
                 });
@@ -294,28 +293,6 @@ namespace LibraryManagementAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LibraryManagementAPI.Models.Book", b =>
-                {
-                    b.HasOne("LibraryManagementAPI.Models.Category", "Category")
-                        .WithMany("Books")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("LibraryManagementAPI.Models.Loan", b =>
-                {
-                    b.HasOne("LibraryManagementAPI.Models.Book", "Book")
-                        .WithMany("Loans")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -365,16 +342,6 @@ namespace LibraryManagementAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("LibraryManagementAPI.Models.Book", b =>
-                {
-                    b.Navigation("Loans");
-                });
-
-            modelBuilder.Entity("LibraryManagementAPI.Models.Category", b =>
-                {
-                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

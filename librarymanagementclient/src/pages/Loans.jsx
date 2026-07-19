@@ -5,10 +5,13 @@ import {
     updateLoan,
     deleteLoan
 } from "../services/loanService";
+import { getBooks } from "../services/bookService";
 import "../styles/Books.css";
 
 function Loans() {
     const [loans, setLoans] = useState([]);
+    const [books, setBooks] = useState([]);
+
     const [loanDate, setLoanDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
     const [bookId, setBookId] = useState("");
@@ -16,13 +19,16 @@ function Loans() {
     const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
-        loadLoans();
+        loadData();
     }, []);
 
-    async function loadLoans() {
+    async function loadData() {
         try {
-            const data = await getLoans();
-            setLoans(data);
+            const loanData = await getLoans();
+            setLoans(loanData);
+
+            const bookData = await getBooks();
+            setBooks(bookData);
         } catch (error) {
             console.error(error);
         }
@@ -30,6 +36,11 @@ function Loans() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (!loanDate || !bookId || !userId.trim()) {
+            alert("Please fill in all required fields.");
+            return;
+        }
 
         const loan = {
             loanDate,
@@ -51,7 +62,7 @@ function Loans() {
             setBookId("");
             setUserId("");
 
-            loadLoans();
+            loadData();
         } catch (error) {
             console.error(error);
             alert(error.message);
@@ -61,7 +72,7 @@ function Loans() {
     async function handleDelete(id) {
         try {
             await deleteLoan(id);
-            loadLoans();
+            loadData();
         } catch (error) {
             console.error(error);
         }
@@ -70,17 +81,29 @@ function Loans() {
     function handleEdit(loan) {
         setEditingId(loan.id);
         setLoanDate(loan.loanDate.substring(0, 10));
-        setReturnDate(loan.returnDate ? loan.returnDate.substring(0, 10) : "");
-        setBookId(loan.bookId);
+        setReturnDate(
+            loan.returnDate ? loan.returnDate.substring(0, 10) : ""
+        );
+        setBookId(loan.bookId.toString());
         setUserId(loan.userId);
     }
 
     return (
-        <>
-            <div className="book-form">
-                <h2>{editingId === null ? "Add Loan" : "Edit Loan"}</h2>
+        <div className="page-container">
+
+            <div className="page-header">
+                <h1>📖 Loans</h1>
+                <p>Manage all book loans in your library.</p>
+            </div>
+
+            <div className="card form-card">
+
+                <h2>
+                    {editingId === null ? "Add Loan" : "Edit Loan"}
+                </h2>
 
                 <form onSubmit={handleSubmit}>
+
                     <input
                         type="date"
                         value={loanDate}
@@ -93,12 +116,21 @@ function Loans() {
                         onChange={(e) => setReturnDate(e.target.value)}
                     />
 
-                    <input
-                        type="number"
-                        placeholder="Book ID"
+                    <select
                         value={bookId}
                         onChange={(e) => setBookId(e.target.value)}
-                    />
+                    >
+                        <option value="">Select Book</option>
+
+                        {books.map(book => (
+                            <option
+                                key={book.id}
+                                value={book.id}
+                            >
+                                {book.title}
+                            </option>
+                        ))}
+                    </select>
 
                     <input
                         type="text"
@@ -110,36 +142,47 @@ function Loans() {
                     <button className="save-btn" type="submit">
                         {editingId === null ? "Add Loan" : "Save Changes"}
                     </button>
+
                 </form>
+
             </div>
 
-            <div className="book-table">
-                <h2>Loans</h2>
+            <div className="card table-card">
+
+                <h2>Loan List</h2>
 
                 <table>
+
                     <thead>
                         <tr>
                             <th>Loan Date</th>
                             <th>Return Date</th>
-                            <th>Book ID</th>
+                            <th>Book</th>
                             <th>User ID</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
+
                         {loans.map((loan) => (
+
                             <tr key={loan.id}>
+
                                 <td>{loan.loanDate.substring(0, 10)}</td>
+
                                 <td>
                                     {loan.returnDate
                                         ? loan.returnDate.substring(0, 10)
                                         : "-"}
                                 </td>
-                                <td>{loan.bookId}</td>
+
+                                <td>{loan.bookTitle}</td>
+
                                 <td>{loan.userId}</td>
 
                                 <td>
+
                                     <button
                                         className="edit-btn"
                                         onClick={() => handleEdit(loan)}
@@ -153,13 +196,20 @@ function Loans() {
                                     >
                                         Delete
                                     </button>
+
                                 </td>
+
                             </tr>
+
                         ))}
+
                     </tbody>
+
                 </table>
+
             </div>
-        </>
+
+        </div>
     );
 }
 

@@ -1,7 +1,18 @@
 const API_URL = "https://localhost:7072/api/Book";
 
+function getAuthHeaders() {
+    const token = localStorage.getItem("token");
+
+    return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+    };
+}
+
 export async function getBooks() {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {
+        headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
         throw new Error("Failed to fetch books");
@@ -13,9 +24,7 @@ export async function getBooks() {
 export async function createBook(book) {
     const response = await fetch(API_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(book)
     });
 
@@ -28,7 +37,8 @@ export async function createBook(book) {
 
 export async function deleteBook(id) {
     const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: getAuthHeaders()
     });
 
     if (!response.ok) {
@@ -39,9 +49,7 @@ export async function deleteBook(id) {
 export async function updateBook(id, book) {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(book)
     });
 

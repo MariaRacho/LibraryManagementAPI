@@ -6,6 +6,8 @@ public class LoanResponseDto
 
     public int BookId { get; set; }
 
+    public string BookTitle { get; set; } = string.Empty;
+
     public string UserId { get; set; } = string.Empty;
 
     public DateTime LoanDate { get; set; }

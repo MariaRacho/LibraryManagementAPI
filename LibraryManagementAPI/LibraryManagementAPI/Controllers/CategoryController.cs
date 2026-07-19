@@ -1,5 +1,6 @@
 ﻿using LibraryManagementAPI.DTOs;
 using LibraryManagementAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementAPI.Controllers;
@@ -16,14 +17,14 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<CategoryResponseDto>>> GetAll()
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<CategoryResponseDto>>> GetAll()
     {
-        var categories = await _categoryService.GetAllAsync();
-
-        return Ok(categories);
+        return Ok(await _categoryService.GetAllAsync());
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<CategoryResponseDto>> GetById(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -37,14 +38,16 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CategoryResponseDto>> Create(CategoryCreateDto dto)
     {
-        var category = await _categoryService.CreateAsync(dto);
+        var createdCategory = await _categoryService.CreateAsync(dto);
 
-        return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
+        return CreatedAtAction(nameof(GetById), new { id = createdCategory.Id }, createdCategory);
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(int id, CategoryUpdateDto dto)
     {
         var updated = await _categoryService.UpdateAsync(id, dto);
@@ -58,6 +61,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _categoryService.DeleteAsync(id);
