@@ -62,4 +62,4 @@ Frontend är byggd i React och använder HTTP-anrop via `fetch` för att kommuni
 
 ## Reflektion
 
-Det som gick bra var att bygga upp CRUD-funktionerna och koppla ihop frontend med backend. Den största utmaningen var att få kommunikationen mellan React och API:t att fungera, bland annat med CORS, rätt API-adress och uppdateringsfunktionen för lån. När dessa problem löstes fungerade applikationen som planerat och gav en bättre förståelse för hur en fullstack-applikation är uppbyggd.
+Det som gick bra var att bygga upp CRUD-funktionerna och koppla ihop frontend med backend. Den största utmaningen var att få kommunikationen mellan React och API:t att fungera, bland annat med CORS, rätt API-adress och uppdateringsfunktionen för lån. När dessa problem hade lösts fungerade applikationen som planerat och projektet gav mig en bättre förståelse för hur en fullstack-applikation är uppbyggd.
