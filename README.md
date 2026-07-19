@@ -1,36 +1,53 @@
-# Book Library
+# Library Management System
 
-## Beskrivning
+## About the project
 
-Book Library är en fullstack-webbapplikation där användaren kan hantera ett bibliotek. I applikationen går det att skapa, visa, uppdatera och ta bort böcker, kategorier och utlåningar. Frontend är byggd i React och kommunicerar med ett ASP.NET Core Web API som sparar all data i en SQL Server-databas.
+Library Management System is a fullstack web application for managing a library. Users can register, log in, and manage books, categories, and loans. The application consists of a React frontend that communicates with an ASP.NET Core Web API connected to a SQL Server database.
 
-## Hur man kör projektet
+## Technologies
+
+- React
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQL Server
+- JWT Authentication
+- ASP.NET Identity
+
+## How to run the project
 
 ### Backend
 
-1. Öppna API-projektet i Visual Studio.
-2. Kontrollera att SQL Server är igång.
-3. Kör projektet (F5 eller Start).
-4. API:t startar och Swagger öppnas.
+1. Open the API project in Visual Studio.
+2. Update the database if needed.
+3. Run the API.
+4. Swagger is available at:
+
+```
+https://localhost:7072/swagger
+```
 
 ### Frontend
 
-1. Öppna frontend-projektet i Visual Studio Code eller en terminal.
-2. Installera beroenden:
+Open the React project and run:
 
 ```bash
 npm install
-```
-
-3. Starta frontend:
-
-```bash
 npm run dev
 ```
 
-4. Öppna adressen som visas i terminalen (vanligtvis `http://localhost:5173`).
+The frontend will start on:
 
-## Endpoints
+```
+http://localhost:5174
+```
+
+## API Endpoints
+
+### Authentication
+
+- POST `/api/Auth/register`
+- POST `/api/Auth/login`
+- POST `/api/Auth/make-admin/{username}`
 
 ### Books
 
@@ -56,10 +73,10 @@ npm run dev
 - PUT `/api/Loan/{id}`
 - DELETE `/api/Loan/{id}`
 
-## Hur frontend pratar med API:et
+## Communication between frontend and backend
 
-Frontend är byggd i React och använder HTTP-anrop via `fetch` för att kommunicera med ASP.NET Core Web API. API:t hanterar all logik och sparar informationen i SQL Server-databasen. Kommunikation sker i JSON-format.
+The React frontend communicates with the ASP.NET Core Web API using the Fetch API. Data is sent and received as JSON. Protected endpoints require a JWT token, which is stored after login and included in the Authorization header for authenticated requests.
 
-## Reflektion
+## Reflection
 
-Det som gick bra var att bygga upp CRUD-funktionerna och koppla ihop frontend med backend. Den största utmaningen var att få kommunikationen mellan React och API:t att fungera, bland annat med CORS, rätt API-adress och uppdateringsfunktionen för lån. När dessa problem hade lösts fungerade applikationen som planerat och projektet gav mig en bättre förståelse för hur en fullstack-applikation är uppbyggd.
+The project helped me understand how a React frontend communicates with an ASP.NET Core Web API. I also learned how to use Entity Framework Core, SQL Server, JWT authentication, and role-based authorization. The biggest challenge was connecting the frontend and backend and making sure authenticated requests worked correctly, but after troubleshooting the application worked as expected.
